@@ -9,7 +9,8 @@ setup(name='django-museum',
       license='MIT',
       packages=['museum'],
       install_requires=[
-          'Pillow==4.1.1'
+          'Pillow==4.1.1',
+          'python-resize-image==1.1.11'
       ],
       classifiers=[
         'Environment :: Web Environment',
