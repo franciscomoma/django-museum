@@ -1,2 +1,3 @@
 dist/*
 django_museum.egg-info/*
+*.pyc

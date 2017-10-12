@@ -1,4 +1,5 @@
 import os
+import hashlib
 
 from PIL import Image
 from django.contrib.auth.models import User
@@ -25,17 +26,23 @@ class Size(models.Model):
         (THUMBNAIL, _(u'Thumbnail')),
     )
 
-    name = models.CharField(max_length=50, primary_key=True)
+    name = models.CharField(max_length=255)
     method = models.CharField(max_length=3, choices=METHODS, default=WIDTH, verbose_name=_(u'Method'))
     height = models.IntegerField(default=0, verbose_name=_(u'Height'))
     width = models.IntegerField(default=0, verbose_name=_(u'Width'))
 
 
 class Picture(models.Model):
+    hash = models.CharField(max_length=32, primary_key=True)
     created_at = models.DateField(auto_now=True, verbose_name=_(u'Created at'))
-    name = models.CharField(max_length=155, verbose_name=_(u'Name'), unique=True)
+    name = models.CharField(max_length=255, verbose_name=_(u'Name'))
     owner = models.ForeignKey(User, verbose_name=_(u'Owner'))
-    original_file = models.FileField(verbose_name=_(u'File'))
+    original_file = models.FileField(verbose_name=_(u'File'), upload_to=settings.UPLOADS_DIR)
+
+    def save(self):
+        self.name = os.path.basename(self.original_file.path)
+        self.hash = hashlib.md5(self.original_file.read()).hexdigest()
+        super().save()
 
     @staticmethod
     def get_file_path():
@@ -118,3 +125,4 @@ class PictureFile(models.Model):
     picture = models.ForeignKey(Picture, verbose_name=_(u'Picture'))
     file = models.FileField(verbose_name=_(u'File'))
     size = models.ForeignKey(Size, verbose_name=_(u'Size'))
+

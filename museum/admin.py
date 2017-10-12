@@ -8,7 +8,8 @@ class PictureFileInLine(admin.TabularInline):
 
 class PictureAdmin(admin.ModelAdmin):
     inlines = [PictureFileInLine, ]
-    list_display = ['pk', 'name']
+    list_display = ['pk']
+    readonly_fields = ['hash']
 
 
 class SizeAdmin(admin.ModelAdmin):
@@ -17,3 +18,4 @@ class SizeAdmin(admin.ModelAdmin):
 
 admin.site.register(Size, SizeAdmin)
 admin.site.register(Picture, PictureAdmin)
+ 
