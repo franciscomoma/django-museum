@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='django-museum',
-      version='0.1',
+      version='0.2',
       description='Manage different picture sizes easily in your Django project.',
       url='https://github.com/franciscomoma/django-museum',
       author='Francisco Molina',
