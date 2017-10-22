@@ -31,6 +31,9 @@ class Size(models.Model):
     height = models.IntegerField(default=0, verbose_name=_(u'Height'))
     width = models.IntegerField(default=0, verbose_name=_(u'Width'))
 
+    def __unicode__(self):
+        return name
+
 
 class Picture(models.Model):
     hash = models.CharField(max_length=32, primary_key=True)
@@ -38,6 +41,14 @@ class Picture(models.Model):
     name = models.CharField(max_length=255, verbose_name=_(u'Name'))
     owner = models.ForeignKey(User, verbose_name=_(u'Owner'))
     original_file = models.FileField(verbose_name=_(u'File'), upload_to=settings.UPLOADS_DIR)
+    
+    @property
+    def filename(self):
+        return os.path.splitext(os.path.basename(self.original_file.path))[0]
+
+    @property
+    def extension(self):
+        return os.path.splitext(os.path.basename(self.original_file.path))[1]
 
     def save(self):
         self.name = os.path.basename(self.original_file.path)
@@ -122,7 +133,22 @@ class Picture(models.Model):
 
 
 class PictureFile(models.Model):
-    picture = models.ForeignKey(Picture, verbose_name=_(u'Picture'))
+    picture = models.ForeignKey(Picture, related_name='picturefiles', verbose_name=_(u'Picture'))
     file = models.FileField(verbose_name=_(u'File'))
     size = models.ForeignKey(Size, verbose_name=_(u'Size'))
 
+    @property
+    def size_name(self):
+        return self.size.name
+
+    @property
+    def filename(self):
+        return os.path.splitext(os.path.basename(self.file.path))[0]
+
+    @property
+    def extension(self):
+        return os.path.splitext(os.path.basename(self.file.path))[1]
+
+    @property
+    def width(self):
+        return self.size.width
